@@ -1,24 +1,62 @@
 # HashBuilder
 
-TODO: Write a gem description
+Simple DSL for building hashes
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'hash_builder'
+    gem 'hash_builder', github: 'benastan/hash_builder'
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install hash_builder
-
 ## Usage
 
-TODO: Write usage instructions here
+```
+require 'hash_builder'
+require 'hash_builder/core_ext/hash'
+
+Hash.build(context: { something: 'ball bearings' }) do
+  someKey 'blah key'
+
+  someArray do
+    self << hash do
+      arrayValue 'hash'
+    end
+
+    self << 'bar'
+  end
+
+  # To use reserved keywords, as hash keys, 
+  _hash do
+    foo context[:something]
+  end
+end
+=> {:someKey=>"blah key", :someArray=>[{:arrayValue=>"hash"}, "bar"], :hash=>{:foo=>"ball bearings"}}
+```
+
+```
+Hash.build(string_keys: true) do
+  here 'we go'
+
+  there do
+    self << hash do
+      blarr 'jar'
+
+      # Switch to symbol keys.
+      symbol_keys!
+      poly 'fil'
+
+      # Switch back to string keys.
+      string_keys!
+      joly 'chill'
+    end
+  end
+end
+=> {"here"=>"we go", "there"=>[{"blarr"=>"jar", :poly=>"fil", "joly"=>"chill"}]}
+```
 
 ## Contributing
 
